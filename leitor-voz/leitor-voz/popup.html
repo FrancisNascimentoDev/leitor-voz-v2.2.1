@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --fundo: #f4f5f7; --cartao: #ffffff; --texto: #1d2129; --suave: #6b7280; --borda: #e3e5ea;
+    --destaque: #2457d6; --destaque-texto: #ffffff; --marca: #fff3b0; --marca-texto: #1d2129; --lido: #9aa1ad;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fundo: #16181d; --cartao: #1f2229; --texto: #e8eaee; --suave: #9aa1ad; --borda: #2e323b;
+      --destaque: #5b8cff; --destaque-texto: #0d1020; --marca: #3b3415; --marca-texto: #ffe680; --lido: #6b7280;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { width: 380px; margin: 0; padding: 14px; background: var(--fundo); color: var(--texto);
+         font: 13px/1.4 system-ui, "Segoe UI", sans-serif; }
+  button { font: inherit; color: inherit; cursor: pointer; }
+
+  .topo { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .topo img { width: 22px; height: 22px; }
+  .topo h1 { font-size: 14px; margin: 0; flex: 1; }
+  .status { font-size: 11px; padding: 2px 8px; border-radius: 99px; background: var(--borda); color: var(--suave); }
+  .status.tocando { background: var(--destaque); color: var(--destaque-texto); }
+
+  .titulo { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .contador { color: var(--suave); font-size: 11px; margin: 2px 0 6px; }
+  .barra { height: 6px; border-radius: 3px; background: var(--borda); cursor: pointer; overflow: hidden; }
+  .barra div { height: 100%; width: 0; background: var(--destaque); transition: width .25s; }
+
+  .texto { background: var(--cartao); border: 1px solid var(--borda); border-radius: 10px; margin-top: 10px;
+           height: 210px; overflow-y: auto; padding: 10px 12px; font-size: 14px; line-height: 1.6; }
+  .texto span { cursor: pointer; border-radius: 3px; padding: 1px 0; }
+  .texto span:hover { text-decoration: underline; text-decoration-color: var(--destaque); }
+  .texto span.lido { color: var(--lido); }
+  .texto span.atual { background: var(--marca); color: var(--marca-texto); box-shadow: 0 0 0 3px var(--marca); }
+  .vazio { color: var(--suave); text-align: center; padding-top: 50px; font-size: 13px; }
+  .vazio b { color: var(--texto); }
+  .erro { color: #d14343; font-size: 12px; margin-top: 6px; }
+
+  .controles { display: flex; justify-content: center; align-items: center; gap: 14px; margin: 12px 0 8px; }
+  .ctl { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--borda); background: var(--cartao);
+         display: grid; place-items: center; }
+  .ctl svg { width: 18px; height: 18px; fill: currentColor; }
+  .ctl.play { width: 54px; height: 54px; background: var(--destaque); color: var(--destaque-texto); border: 0; }
+  .ctl.play svg { width: 24px; height: 24px; }
+  .ctl:hover { filter: brightness(0.95); }
+
+  .velocidades { display: flex; gap: 4px; justify-content: center; margin-bottom: 10px; }
+  .velocidades button { border: 1px solid var(--borda); background: var(--cartao); border-radius: 99px; padding: 3px 9px; font-size: 12px; }
+  .velocidades button.ativo { background: var(--destaque); color: var(--destaque-texto); border-color: var(--destaque); }
+
+  .fontes { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .fontes button { border: 1px solid var(--borda); background: var(--cartao); border-radius: 8px; padding: 7px 4px; font-size: 12px; }
+  .fontes button:hover { border-color: var(--destaque); }
+
+  details { margin-top: 10px; background: var(--cartao); border: 1px solid var(--borda); border-radius: 8px; padding: 6px 10px; }
+  summary { cursor: pointer; font-weight: 600; font-size: 12px; }
+  label { display: block; font-size: 12px; font-weight: 600; margin: 8px 0 3px; }
+  select, input[type=range] { width: 100%; }
+  select { padding: 4px; background: var(--fundo); color: var(--texto); border: 1px solid var(--borda); border-radius: 6px; }
+  label.opcao { display: flex; align-items: center; gap: 6px; font-weight: 400; margin: 8px 0 0; cursor: pointer; }
+  .testar { margin: 8px 0 4px; width: 100%; border: 1px solid var(--borda); background: var(--fundo); border-radius: 6px; padding: 6px; }
+
+  .dica { font-size: 11px; color: var(--suave); margin-top: 10px; line-height: 1.5; }
+  .credito { margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--borda); text-align: center;
+             font-size: 11px; color: var(--suave); }
+  .credito b { color: var(--texto); font-weight: 600; }
+  kbd { font: 10px ui-monospace, monospace; background: var(--cartao); border: 1px solid var(--borda); border-radius: 3px; padding: 0 3px; }
+</style>
+</head>
+<body>
+  <div class="topo">
+    <img src="icons/icon48.png" alt="">
+    <h1>Leitor em Voz Alta</h1>
+    <span class="status" id="status">parado</span>
+  </div>
+
+  <div class="titulo" id="titulo">Nada carregado</div>
+  <div class="contador" id="contador">&nbsp;</div>
+  <div class="barra" id="barra" title="Clique para pular"><div id="progresso"></div></div>
+
+  <div class="texto" id="texto">
+    <div class="vazio">
+      Clique numa palavra da página e aperte <b>▶</b><br>
+      (ou <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>D</kbd>).<br><br>
+      Depois é só clicar em qualquer frase aqui<br>para pular até ela.
+    </div>
+  </div>
+  <div class="erro" id="erro"></div>
+
+  <div class="controles">
+    <button class="ctl" id="parar" title="Parar">
+      <svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/></svg></button>
+    <button class="ctl" id="anterior" title="Frase anterior (Alt+Shift+←)">
+      <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zM9.5 12 18 6v12z"/></svg></button>
+    <button class="ctl play" id="alternar" title="Ler / pausar (Alt+Shift+P)">
+      <svg viewBox="0 0 24 24" id="iconePlay"><path d="M8 5v14l11-7z"/></svg></button>
+    <button class="ctl" id="proximo" title="Próxima frase (Alt+Shift+→)">
+      <svg viewBox="0 0 24 24"><path d="M16 6h2v12h-2zM6 18l8.5-6L6 6z"/></svg></button>
+    <button class="ctl" id="repetir" title="Repetir a frase atual">
+      <svg viewBox="0 0 24 24"><path d="M12 5V2L7 6l5 4V7a5 5 0 1 1-5 5H5a7 7 0 1 0 7-7z"/></svg></button>
+  </div>
+
+  <div class="velocidades" id="velocidades">
+    <button data-v="0.75">0,75x</button><button data-v="1">1x</button><button data-v="1.25">1,25x</button>
+    <button data-v="1.5">1,5x</button><button data-v="1.75">1,75x</button><button data-v="2">2x</button>
+  </div>
+
+  <div class="fontes">
+    <button id="daqui" title="Começa na palavra onde você clicou na página">▶ Daqui em diante</button>
+    <button id="pagina" title="Lê o conteúdo principal da página">📄 Página toda</button>
+    <button id="selecao" title="Lê só o texto selecionado">✂ Seleção</button>
+  </div>
+
+  <details>
+    <summary>⚙ Voz e ajustes</summary>
+    <label for="voz">Voz</label>
+    <select id="voz"></select>
+    <label for="vel">Velocidade: <span id="velValor">1.0</span>x</label>
+    <input type="range" id="vel" min="0.5" max="3" step="0.05" value="1">
+    <label for="tom">Tom: <span id="tomValor">1.0</span></label>
+    <input type="range" id="tom" min="0.5" max="1.5" step="0.05" value="1">
+    <label class="opcao"><input type="checkbox" id="destacar"> Destacar na página o que está sendo lido</label>
+    <label class="opcao"><input type="checkbox" id="rolar"> Rolar a página acompanhando a leitura</label>
+    <button class="testar" id="testar">🔈 Testar voz</button>
+  </details>
+
+  <div class="dica">
+    <kbd>Alt+Shift+D</kbd> ler daqui · <kbd>Alt+Shift+P</kbd> pausar ·
+    <kbd>Alt+Shift+←/→</kbd> frase anterior/próxima<br>
+    PDF: selecione um trecho → botão direito → <b>Ler daqui em diante</b>.
+  </div>
+
+  <div class="credito">Desenvolvido por <b>Francis Nascimento</b> · v<span id="versao"></span></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

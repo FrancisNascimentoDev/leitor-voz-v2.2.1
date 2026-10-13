@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demonstração — Leitor em Voz Alta</title>
+<style>
+  body { margin: 0; font: 18px/1.75 Georgia, "Times New Roman", serif; color: #1d2129; background: #f6f5f1; }
+  header { background: #1b3fae; color: #fff; padding: 18px 32px; font: 600 18px system-ui, sans-serif; }
+  main { max-width: 760px; margin: 40px auto; background: #fff; padding: 40px 56px; border-radius: 10px; box-shadow: 0 2px 14px rgba(0,0,0,.06); }
+  h1 { font: 700 34px/1.25 system-ui, sans-serif; margin: 0 0 8px; }
+  .sub { font: 15px system-ui, sans-serif; color: #6b7280; margin-bottom: 28px; }
+  h2 { font: 700 22px system-ui, sans-serif; margin-top: 34px; }
+</style>
+</head>
+<body>
+<header>📘 Notas de Estudo — Redes de Computadores</header>
+<main>
+  <h1>O modelo em camadas, explicado sem complicação</h1>
+  <div class="sub">Leitura de 4 minutos · Material de demonstração</div>
+
+  <p>Quando dois computadores conversam pela internet, muita coisa acontece ao mesmo tempo. Para organizar esse trabalho, a comunicação é dividida em camadas, e cada uma cuida de uma parte do problema. Assim, quem desenvolve um aplicativo não precisa se preocupar com cabos, e quem cuida dos cabos não precisa entender o aplicativo.</p>
+
+  <p>Pense numa carta enviada pelos Correios. Você escreve a mensagem, coloca no envelope, escreve o endereço e entrega na agência. Daí em diante, outras pessoas cuidam da triagem, do transporte e da entrega. Cada etapa confia que a anterior fez a sua parte.</p>
+
+  <h2>Das aplicações aos sinais elétricos</h2>
+  <p>No topo ficam as aplicações, como o navegador e o e-mail. Logo abaixo, a camada de transporte divide os dados em pedaços e garante que eles cheguem completos e na ordem certa. A camada de rede escolhe o caminho entre os roteadores, usando endereços IP. Por fim, as camadas mais baixas transformam tudo em sinais elétricos, luz ou ondas de rádio.</p>
+
+  <p>Essa divisão também ajuda na segurança. Um firewall pode filtrar o tráfego olhando endereços e portas, enquanto um sistema de detecção de intrusão analisa o conteúdo das mensagens em busca de comportamentos suspeitos. Entender as camadas é o primeiro passo para entender onde cada defesa atua.</p>
+
+  <h2>Por que isso importa para quem estuda</h2>
+  <p>Quase todo problema de rede pode ser investigado camada por camada. Se o cabo está desconectado, nada acima dele funciona. Se o endereço está errado, os dados não encontram o destino. Com esse raciocínio, a solução de problemas deixa de ser tentativa e erro e passa a ser um processo organizado.</p>
+</main>
+</body>
+</html>

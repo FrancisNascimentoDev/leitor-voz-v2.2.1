@@ -1,0 +1,58 @@
+{
+  "manifest_version": 3,
+  "name": "Leitor em Voz Alta",
+  "version": "2.2.1",
+  "description": "Ouça páginas e PDFs a partir de onde você clicar, com o texto destacado. Sem enviar dados. Por Francis Nascimento.",
+  "permissions": ["tts", "contextMenus", "activeTab", "scripting", "storage", "offscreen"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["marcador.js"],
+      "all_frames": true,
+      "match_about_blank": true,
+      "run_at": "document_start"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Leitor em Voz Alta",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "commands": {
+    "ler-daqui": {
+      "suggested_key": { "default": "Alt+Shift+D" },
+      "description": "Ler do ponto clicado em diante"
+    },
+    "pausar": {
+      "suggested_key": { "default": "Alt+Shift+P" },
+      "description": "Ler / pausar / continuar"
+    },
+    "anterior": {
+      "suggested_key": { "default": "Alt+Shift+Left" },
+      "description": "Frase anterior"
+    },
+    "proximo": {
+      "suggested_key": { "default": "Alt+Shift+Right" },
+      "description": "Próxima frase"
+    },
+    "parar": {
+      "description": "Parar leitura"
+    },
+    "ler-pagina": {
+      "description": "Ler a página inteira"
+    }
+  }
+}
